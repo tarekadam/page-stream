@@ -14,7 +14,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "TarekAdam\\DayVillas\\": "src/"
+      "TarekAdam\\PageStream\\": "src/"
     }
   },
   "autoload-dev": {
