@@ -2,31 +2,20 @@
 
 namespace TarekAdam\PageStream;
 
-class Paginator implements \Countable, \Iterator{
+class Paginator implements \Iterator{
 
 	private $client;
-	private $page = 1;
-	private $pages = 1;
-	private $max_per_page = 100;
 	private $pointer = 0;
-	private $size = 0;
+	private $page = 1;
 	private $chunk = [];
 
-	public function __construct(Paginatable $client, int $max_per_page = 100){
-		$this->client = $client;
-		$this->max_per_page = $max_per_page;
-
-		if($this->client->getPage() != 1){
-			$this->pointer = (($this->client->page - 1) * $this->max_per_page);
-		}
-	}
-
-	private function pagePointer(){
-		return ($this->pointer - ($this->max_per_page * ($this->page - 1)));
+	public function __construct(Paginatable $client){
+		$this->client       = $client;
+		$this->chunk        = $client->toArray();
 	}
 
 	public function current(){
-		return $this->chunk[$this->pagePointer()];
+		return $this->chunk[$this->pointer];
 	}
 
 	public function next(){
@@ -41,33 +30,31 @@ class Paginator implements \Countable, \Iterator{
 	}
 
 	public function valid(){
-		return !empty($this->chunk[$this->pagePointer()]);
+		return !empty($this->chunk[$this->pointer]);
 	}
 
 	public function rewind(){
-		$this->pointer = 0;
-		if($this->page != 1){
-			$this->paginate(1);
-		}
-	}
+			$this->pointer = 0;
 
-	public function count(){
-		return $this->size;
+			if($this->page != 1){
+				$this->paginate(1);
+			}
 	}
 
 
 	private function paginate(int $x = null){
 
-		if(!empty($x)){
-			$this->client->setPage($x);
+		$this->page = (!empty($x))? $x : $this->client->getPage() +1;
+
+		if($this->page > $this->client->totalPages()){
+			$this->chunk = [];
 			return;
 		}
 
-		$client_page = $this->client->getPage();
-		if(empty($client_page)){
-			$this->client->setPage($this->page);
-		}
-
+		$this->client->setPage($this->page);
 		$this->client->exchangeData();
+
+		$this->chunk = $this->client->toArray();
+		$this->pointer = 0;
 	}
 }
