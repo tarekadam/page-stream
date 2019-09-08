@@ -1,0 +1,24 @@
+{
+  "name": "tarek-adam/page-stream",
+  "description": "A paginator for guzzling api data.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+  },
+  "authors": [
+    {
+      "name": "Tarek Adam",
+      "email": "tarek@fuqu.io"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "TarekAdam\\DayVillas\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "TarekAdam\\Test\\": "tests/"
+    }
+  }
+}
